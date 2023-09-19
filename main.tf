@@ -17,30 +17,33 @@
 #
 # Configure the MongoDB Atlas Provider
 #
+
 terraform {
   required_providers {
     mongodbatlas = {
       source = "mongodb/mongodbatlas"
+      version = "1.4.6"
+    }
+    aws = {
+      source = "hashicorp/aws"
+      version = "~> 5.17"
     }
   }
- }
+  required_version = ">= 1.5"
+}
 
 provider "mongodbatlas" {
   public_key  = local.mongodb_atlas_api_pub_key
   private_key = local.mongodb_atlas_api_pri_key
 }
 
-#
 # Create a Project
-#
 resource "mongodbatlas_project" "my_project" {
   name   = "atlasProjectName"
   org_id = local.mongodb_atlas_org_id
 }
 
-#
 # Create a Shared Tier Cluster
-#
 resource "mongodbatlas_cluster" "my_cluster" {
   project_id              = mongodbatlas_project.my_project.id
   name                    = "atlasClusterName"
@@ -51,23 +54,16 @@ resource "mongodbatlas_cluster" "my_cluster" {
   # options: AWS AZURE GCP
   backing_provider_name = "AWS"
 
-  # options: M2/M5 atlas regions per cloud provider
-  # GCP - CENTRAL_US SOUTH_AMERICA_EAST_1 WESTERN_EUROPE EASTERN_ASIA_PACIFIC NORTHEASTERN_ASIA_PACIFIC ASIA_SOUTH_1
-  # AZURE - US_EAST_2 US_WEST CANADA_CENTRAL EUROPE_NORTH
   # AWS - US_EAST_1 US_WEST_2 EU_WEST_1 EU_CENTRAL_1 AP_SOUTH_1 AP_SOUTHEAST_1 AP_SOUTHEAST_2
-  provider_region_name = "providerRegionName"
+  provider_region_name = "US_EAST_1"
 
-  # options: M2 M5
   provider_instance_size_name = "M2"
 
-  # Will not change till new version of MongoDB but must be included
   mongo_db_major_version = "4.4"
   auto_scaling_disk_gb_enabled = "false"
 }
 
-#
 # Create an Atlas Admin Database User
-#
 resource "mongodbatlas_database_user" "my_user" {
   username           = local.mongodb_atlas_database_username
   password           = local.mongodb_atlas_database_user_password
