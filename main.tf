@@ -71,7 +71,7 @@ resource "mongodbatlas_advanced_cluster" "my_cluster" {
 
 # Create an Atlas Admin Database User
 resource "mongodbatlas_database_user" "my_user" {
-  username           = local.mongodb_atlas_database_username
+  username           = local.mongodb_atlas_database_username # change to generate random password
   password           = local.mongodb_atlas_database_user_password
   project_id         = mongodbatlas_project.my_project.id
   auth_database_name = "admin"
@@ -80,6 +80,12 @@ resource "mongodbatlas_database_user" "my_user" {
     role_name     = "atlasAdmin"
     database_name = "admin"
   }
+  scopes {
+    name   = "my_cluster"
+    type = "CLUSTER"
+  }
+
+  # aws_iam_type = "ROLE" # create a role and give admin permissions to that role
 }
 
 #
