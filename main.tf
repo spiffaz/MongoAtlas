@@ -63,10 +63,20 @@ resource "mongodbatlas_advanced_cluster" "my_cluster" {
       region_name   = "US_EAST_2"
     }
   }
+  maintenance_window {
+    id = mongodbatlas_maintenance_window.maintenance_window.id
+  }
   labels {
     key   = "Team"
     value = "Infrastructure"
   }
+}
+
+resource "mongodbatlas_maintenance_window" "maintenance_window" {
+  project_id        = mongodbatlas_project.my_project.id
+  day_of_week       = "MONDAY"  
+  start_hour_utc    = 2         
+  frequency_interval_hours = 168  # Weekly
 }
 
 # Create an Atlas Admin Database User
@@ -84,19 +94,15 @@ resource "mongodbatlas_database_user" "my_user" {
     name = "my_cluster"
     type = "CLUSTER"
   }
-
+  labels {
+    key   = "Team"
+    value = "Infrastructure"
+  }
   # aws_iam_type = "ROLE" # create a role and give admin permissions to that role
 }
 
-#
-# Create an IP Accesslist
-#
-# can also take a CIDR block or AWS Security Group -
-# replace ip_address with either cidr_block = "CIDR_NOTATION"
-# or aws_security_group = "SECURITY_GROUP_ID"
-#
 resource "mongodbatlas_project_ip_access_list" "my_ipaddress" {
   project_id = mongodbatlas_project.my_project.id
-  ip_address = local.mongodb_atlas_accesslistip
-  comment    = "My IP Address"
+  ip_address = local.mongodb_atlas_accesslistip #aws_security_group = "SECURITY_GROUP_ID" # change to aws security group
+  comment    = "Allowed IP addresses"
 }
