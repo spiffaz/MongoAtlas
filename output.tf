@@ -4,5 +4,5 @@ output "connection_strings" {
 }
 
 output "private_srv" {
-    value = mongodbatlas_cluster.my_cluster.connection_strings[0].private_srv
+  value = mongodbatlas_cluster.my_cluster.connection_strings[0].private_srv
 }
