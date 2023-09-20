@@ -1,23 +1,3 @@
-#
-# Example Terraform Config to create a
-# MongoDB Atlas Shared Tier Project, Cluster,
-# Database User and Project IP Whitelist Entry
-#
-# First step is to create a MongoDB Atlas account
-# https://docs.atlas.mongodb.com/tutorial/create-atlas-account/
-#
-# Then create an organization and programmatic API key
-# https://docs.atlas.mongodb.com/tutorial/manage-organizations
-# https://docs.atlas.mongodb.com/tutorial/manage-programmatic-access
-#
-# Terraform MongoDB Atlas Provider Documentation
-# https://www.terraform.io/docs/providers/mongodbatlas/index.html
-# Terraform 0.14+, MongoDB Atlas Provider 0.9.1+
-
-#
-# Configure the MongoDB Atlas Provider
-#
-
 terraform {
   required_providers {
     mongodbatlas = {
@@ -39,28 +19,54 @@ provider "mongodbatlas" {
 
 # Create a Project
 resource "mongodbatlas_project" "my_project" {
-  name   = "atlasProjectName"
+  name   = var.projectName
   org_id = local.mongodb_atlas_org_id
 }
 
 # Create a Shared Tier Cluster
-resource "mongodbatlas_cluster" "my_cluster" {
+resource "mongodbatlas_advanced_cluster" "my_cluster" {
   project_id              = mongodbatlas_project.my_project.id
-  name                    = "atlasClusterName"
-
-  # Provider Settings "block"
-  provider_name = "TENANT"
-
-  # options: AWS AZURE GCP
-  backing_provider_name = "AWS"
-
-  # AWS - US_EAST_1 US_WEST_2 EU_WEST_1 EU_CENTRAL_1 AP_SOUTH_1 AP_SOUTHEAST_1 AP_SOUTHEAST_2
-  provider_region_name = "US_EAST_1"
-
-  provider_instance_size_name = "M2"
-
+  name                    = "atlasClusterName" # change to var
+  cluster_type = "REPLICASET" # default to replicaset, consider sharded
+  provider_name = "AWS"
+  backup_enabled = "true"
+  #disk_size_gb = ""
   mongo_db_major_version = "4.4"
   auto_scaling_disk_gb_enabled = "false"
+
+  replication_specs {
+    region_configs {
+      electable_specs {
+        instance_size = "M10"
+        node_count    = 3
+        #ebs_volume_type = "STANDARD" # "PROVISIONED"
+      }
+      analytics_specs {
+        instance_size = "M10"
+        node_count    = 1
+      }
+      provider_name = "AWS"
+      priority      = 7
+      region_name   = "US_EAST_1"
+    }
+    region_configs { 
+      electable_specs {
+        instance_size = "M10"
+        node_count    = 2
+      }
+      analytics_specs {
+        instance_size = "M10"
+        node_count    = 1
+      }
+      provider_name = "AWS"
+      priority      = 6
+      region_name   = "US_EAST_2"
+    }
+  }
+   labels {
+        key   = "Team"
+        value = "Infrastructure"
+  }
 }
 
 # Create an Atlas Admin Database User
