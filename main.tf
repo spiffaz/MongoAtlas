@@ -28,56 +28,39 @@ resource "mongodbatlas_network_container" "test" {
   atlas_cidr_block = "10.8.0.0/21"
   provider_name    = "AWS"
   region_name      = "US_EAST_1"
+}
 
-  access_list {
-    ip_address = local.mongodb_atlas_accesslistip # Replace with your public IP address
-    comment    = "Allow public access"
-  }
+resource "mongodbatlas_network_peering" "aws-atlas" {
+  accepter_region_name   = local.aws_region
+  project_id             = mongodbatlas_project.my_project.id
+  container_id           = mongodbatlas_network_container.test.id
+  provider_name          = "AWS"
+  route_table_cidr_block = aws_vpc.primary.cidr_block
+  vpc_id                 = aws_vpc.primary.id
+  aws_account_id         = local.aws_account_id
 }
 
 # Create a Shared Tier Cluster
-resource "mongodbatlas_advanced_cluster" "my_cluster" {
-  project_id     = mongodbatlas_project.my_project.id
-  name           = "atlasClusterName" # change to var
-  cluster_type   = "REPLICASET"       # default to replicaset, consider sharded
-  provider_name  = "AWS"
-  backup_enabled = "true"
-  #disk_size_gb = ""
+resource "mongodbatlas_cluster" "my_cluster" {
+  project_id                   = mongodbatlas_project.my_project.id
+  name                         = "atlasClusterName" # change to var
+  cluster_type                 = "REPLICASET"       # default to replicaset, consider sharded
+  provider_name                = "AWS"
+  provider_instance_size_name  = "M40"
+  backup_enabled               = "true"
   mongo_db_major_version       = "4.4"
   auto_scaling_disk_gb_enabled = "false"
 
   replication_specs {
-    region_configs {
-      electable_specs {
-        instance_size = "M10"
-        node_count    = 3
-        #ebs_volume_type = "STANDARD" # "PROVISIONED"
-      }
-      analytics_specs {
-        instance_size = "M10"
-        node_count    = 1
-      }
-      provider_name = "AWS"
-      priority      = 7
-      region_name   = "US_EAST_1"
+    num_shards = 3
+    regions_config {
+      region_name     = "US_EAST_1"
+      electable_nodes = 3
+      priority        = 7
+      read_only_nodes = 0
     }
-    #region_configs {
-    #  electable_specs {
-    #    instance_size = "M10"
-    #    node_count    = 2
-    #  }
-    #  analytics_specs {
-    #    instance_size = "M10"
-    #    node_count    = 1
-    #  }
-    #  provider_name = "AWS"
-    #  priority      = 6
-    #  region_name   = "US_EAST_2"
-    #}
   }
-  maintenance_window {
-    id = mongodbatlas_maintenance_window.maintenance_window.id
-  }
+
   labels {
     key   = "Team"
     value = "Infrastructure"
@@ -85,10 +68,9 @@ resource "mongodbatlas_advanced_cluster" "my_cluster" {
 }
 
 resource "mongodbatlas_maintenance_window" "maintenance_window" {
-  project_id               = mongodbatlas_project.my_project.id
-  day_of_week              = "MONDAY"
-  start_hour_utc           = 2
-  frequency_interval_hours = 168 # Weekly
+  project_id  = mongodbatlas_project.my_project.id
+  day_of_week = 4 # Wednesday
+  hour_of_day = 2 # 2 am
 }
 
 # Create an Atlas Admin Database User
@@ -113,8 +95,8 @@ resource "mongodbatlas_database_user" "my_user" {
   # aws_iam_type = "ROLE" # create a role and give admin permissions to that role
 }
 
-#resource "mongodbatlas_project_ip_access_list" "my_ipaddress" {
-#  project_id = mongodbatlas_project.my_project.id
-#  ip_address = local.mongodb_atlas_accesslistip #aws_security_group = "SECURITY_GROUP_ID" # change to aws security group
-#  comment    = "Allowed IP addresses"
-#}
+resource "mongodbatlas_project_ip_access_list" "my_ipaddress" {
+  project_id = mongodbatlas_project.my_project.id
+  ip_address = local.mongodb_atlas_accesslistip #aws_security_group = "SECURITY_GROUP_ID" # change to aws security group
+  comment    = "Allowed IP addresses"
+}
