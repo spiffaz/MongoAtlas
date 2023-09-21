@@ -10,3 +10,9 @@ output "private_srv" {
 output "container_vpc" {
   value = mongodbatlas_network_container.test.vpc_id
 }
+
+output "db_user_password" {
+  description = "Database password.  Do not share!"
+  sensitive   = true
+  value       = random_password.user_password.result
+}

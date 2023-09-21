@@ -22,3 +22,9 @@ variable "aws_vpc_cidr" {
   description = "CIDR block for AWS VPC"
   default     = "10.0.0.0/24"
 }
+
+variable "datadog_region" {
+  type        = string
+  description = "Datadog region"
+  default     = "US"
+}

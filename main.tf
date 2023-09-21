@@ -42,30 +42,36 @@ resource "mongodbatlas_network_peering" "aws-atlas" {
 
 # Create a Shared Tier Cluster
 resource "mongodbatlas_cluster" "my_cluster" {
-  project_id                   = mongodbatlas_project.my_project.id
-  name                         = "atlasClusterName" # change to var
-  cluster_type                 = "REPLICASET"       # default to replicaset, consider sharded
-  provider_name                = "AWS"
-  provider_instance_size_name  = "M40"
-  backup_enabled               = "true"
-  mongo_db_major_version       = "4.4"
-  auto_scaling_disk_gb_enabled = "false"
+  project_id   = mongodbatlas_project.my_project.id
+  name         = "atlasClusterName" # change to var
+  cluster_type = "REPLICASET"       # default to replicaset, consider sharded
 
-  replication_specs {
-    num_shards = 3
-    regions_config {
-      region_name     = "US_EAST_1"
-      electable_nodes = 3
-      priority        = 7
-      read_only_nodes = 0
-    }
-  }
+  provider_name               = "TENANT"
+  backing_provider_name       = "AWS"
+  provider_instance_size_name = "M0"
+  provider_region_name        = "US_EAST_1"
+  #backup_enabled               = "true"
+  #mongo_db_major_version       = "4.4"
+  #auto_scaling_disk_gb_enabled = "false"
+
+  #cloud_backup      = true
+
+  #replication_specs {
+  #  num_shards = 3
+  #regions_config {
+  #  region_name     = "US_EAST_1"
+  #  electable_nodes = 3
+  #  priority        = 7
+  #  read_only_nodes = 0
+  #}
+  #}
 
   labels {
     key   = "Team"
     value = "Infrastructure"
   }
 }
+
 
 resource "mongodbatlas_maintenance_window" "maintenance_window" {
   project_id  = mongodbatlas_project.my_project.id
@@ -74,19 +80,15 @@ resource "mongodbatlas_maintenance_window" "maintenance_window" {
 }
 
 # Create an Atlas Admin Database User
-resource "mongodbatlas_database_user" "my_user" {
+resource "mongodbatlas_database_user" "myuser" {
   username           = local.mongodb_atlas_database_username # change to generate random password
-  password           = local.mongodb_atlas_database_user_password
+  password           = random_password.user_password.result  #local.mongodb_atlas_database_user_password
   project_id         = mongodbatlas_project.my_project.id
   auth_database_name = "admin"
 
   roles {
     role_name     = "atlasAdmin"
     database_name = "admin"
-  }
-  scopes {
-    name = "my_cluster"
-    type = "CLUSTER"
   }
   labels {
     key   = "Team"
@@ -99,4 +101,10 @@ resource "mongodbatlas_project_ip_access_list" "my_ipaddress" {
   project_id = mongodbatlas_project.my_project.id
   ip_address = local.mongodb_atlas_accesslistip #aws_security_group = "SECURITY_GROUP_ID" # change to aws security group
   comment    = "Allowed IP addresses"
+}
+
+# generate password
+resource "random_password" "user_password" {
+  length  = 16
+  special = true
 }
