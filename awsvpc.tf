@@ -10,7 +10,7 @@ resource "aws_vpc" "primary" {
   enable_dns_support   = true
 
   tags = {
-    "Name" = "${var.default_tags.team}"
+    "Team" = "${var.default_tags.team}"
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_internet_gateway" "primary" {
   vpc_id = aws_vpc.primary.id
 
   tags = {
-    "Name" = "${var.default_tags.team}"
+    "Team" = "${var.default_tags.team}"
   }
 }
 
@@ -31,6 +31,10 @@ resource "aws_route" "primary-internet_access" {
 resource "aws_vpc_peering_connection_accepter" "peer" {
   vpc_peering_connection_id = mongodbatlas_network_peering.aws-atlas.connection_id
   auto_accept               = true
+
+  tags = {
+    "Team" = "${var.default_tags.team}"
+  }
 }
 
 resource "aws_route" "peeraccess" {
@@ -47,7 +51,7 @@ resource "aws_subnet" "az1" {
   availability_zone       = "${var.aws_region}a" #
 
   tags = {
-    "Name" = "${var.default_tags.team}"
+    "Team" = "${var.default_tags.team}"
   }
 }
 
@@ -70,6 +74,6 @@ resource "aws_security_group" "primary_default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    "Name" = "${var.default_tags.team}"
+    "Team" = "${var.default_tags.team}"
   }
 }
