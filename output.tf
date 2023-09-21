@@ -16,3 +16,7 @@ output "db_user_password" {
   sensitive   = true
   value       = random_password.user_password.result
 }
+
+output "mongo_vpc_id" {
+  value = mongodbatlas_network_container.test.vpc_id
+}
