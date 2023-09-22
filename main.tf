@@ -18,7 +18,7 @@ provider "mongodbatlas" {
 }
 
 # Create a Project
-resource "mongodbatlas_project" "my_project" {
+resource "mongodbatlas_project" "mongo_project" {
   name   = var.projectName
   org_id = local.mongodb_atlas_org_id
 
@@ -29,8 +29,8 @@ resource "mongodbatlas_project" "my_project" {
   is_schema_advisor_enabled                        = true
 }
 
-resource "mongodbatlas_network_container" "test" {
-  project_id       = mongodbatlas_project.my_project.id
+resource "mongodbatlas_network_container" "mongo_container" {
+  project_id       = mongodbatlas_project.mongo_project.id
   atlas_cidr_block = "10.8.0.0/21"
   provider_name    = "AWS"
   region_name      = "US_EAST_1"
@@ -38,8 +38,8 @@ resource "mongodbatlas_network_container" "test" {
 
 resource "mongodbatlas_network_peering" "aws-atlas" {
   accepter_region_name   = local.aws_region
-  project_id             = mongodbatlas_project.my_project.id
-  container_id           = mongodbatlas_network_container.test.id
+  project_id             = mongodbatlas_project.mongo_project.id
+  container_id           = mongodbatlas_network_container.mongo_container.id
   provider_name          = "AWS"
   route_table_cidr_block = aws_vpc.primary.cidr_block
   vpc_id                 = aws_vpc.primary.id
@@ -48,7 +48,7 @@ resource "mongodbatlas_network_peering" "aws-atlas" {
 
 # Create a Shared Tier Cluster
 resource "mongodbatlas_cluster" "my_cluster" {
-  project_id   = mongodbatlas_project.my_project.id
+  project_id   = mongodbatlas_project.mongo_project.id
   name         = "atlasClusterName" # change to var
   cluster_type = "REPLICASET"       # default to replicaset, consider sharded
 
@@ -80,7 +80,7 @@ resource "mongodbatlas_cluster" "my_cluster" {
 
 
 resource "mongodbatlas_maintenance_window" "maintenance_window" {
-  project_id  = mongodbatlas_project.my_project.id
+  project_id  = mongodbatlas_project.mongo_project.id
   day_of_week = 4 # Wednesday
   hour_of_day = 2 # 2 am
 }
@@ -89,7 +89,7 @@ resource "mongodbatlas_maintenance_window" "maintenance_window" {
 resource "mongodbatlas_database_user" "myuser" {
   username           = local.mongodb_atlas_database_username # change to generate random password
   password           = random_password.user_password.result  #local.mongodb_atlas_database_user_password
-  project_id         = mongodbatlas_project.my_project.id
+  project_id         = mongodbatlas_project.mongo_project.id
   auth_database_name = "admin"
 
   roles {
@@ -104,7 +104,7 @@ resource "mongodbatlas_database_user" "myuser" {
 }
 
 resource "mongodbatlas_project_ip_access_list" "my_ipaddress" {
-  project_id = mongodbatlas_project.my_project.id
+  project_id = mongodbatlas_project.mongo_project.id
   ip_address = local.mongodb_atlas_accesslistip #aws_security_group = "SECURITY_GROUP_ID" # change to aws security group
   comment    = "Allowed IP addresses"
 }

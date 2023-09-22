@@ -39,7 +39,7 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
 
 resource "aws_route" "peeraccess" {
   route_table_id            = aws_vpc.primary.main_route_table_id
-  destination_cidr_block    = mongodbatlas_network_container.test.atlas_cidr_block
+  destination_cidr_block    = mongodbatlas_network_container.mongo_container.atlas_cidr_block
   vpc_peering_connection_id = mongodbatlas_network_peering.aws-atlas.connection_id
   depends_on                = [aws_vpc_peering_connection_accepter.peer]
 }
