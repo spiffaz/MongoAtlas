@@ -153,7 +153,7 @@ For more information on MongoDB Atlas, Datadog, and Terraform, refer to the resp
 - [Datadog Documentation](https://docs.datadoghq.com/)
 - [Terraform Documentation](https://www.terraform.io/docs/index.html)
 
-## License
+## License 
 
 This Terraform module is provided under the MIT License. See the [LICENSE](LICENSE) file for more details.
 ```
