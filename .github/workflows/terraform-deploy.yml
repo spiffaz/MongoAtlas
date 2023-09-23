@@ -9,6 +9,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      mongodb_atlas_api_pub_key: ${{ secrets.mongodb_atlas_api_pub_key }}
+      mongodb_atlas_api_pri_key: ${{ secrets.mongodb_atlas_api_pri_key }}
+      mongodb_atlas_org_id: ${{ secrets.mongodb_atlas_org_id }}
+      aws_account_id: ${{ secrets.aws_account_id }}
+      aws_access_key: ${{ secrets.aws_access_key }}
+      aws_secret_key: ${{ secrets.aws_secret_key }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
