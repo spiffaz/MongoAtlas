@@ -17,8 +17,6 @@ jobs:
       aws_access_key: ${{ secrets.aws_access_key }}
       aws_secret_key: ${{ secrets.aws_secret_key }}
       datadog_api_key: ${{ secrets.datadog_api_key }}
-      mongodb_atlas_accesslistip: ${{ mongodb_atlas_accesslistip }}
-      aws_region: ${{ aws_region }}
 
     steps:
       - name: Checkout Code
