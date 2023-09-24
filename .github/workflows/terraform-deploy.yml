@@ -43,7 +43,6 @@ jobs:
 
       - name: Terraform Apply
         uses: hashicorp/terraform-github-actions/apply@v0.4.0
-        env:
           #mongodb_atlas_api_pub_key: ${{ secrets.mongodb_atlas_api_pub_key }}
           #mongodb_atlas_api_pri_key: ${{ secrets.mongodb_atlas_api_pri_key }}
           #mongodb_atlas_org_id: ${{ secrets.mongodb_atlas_org_id }}
