@@ -128,6 +128,7 @@ variable "enable_datadog_integration" {
 
 variable "datadog_api_key" {
   type = string
+  default = "default_value"
 }
 
 # Database variables
