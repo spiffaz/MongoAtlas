@@ -10,7 +10,7 @@ output "cluster_id" {
 
 output "state_name" {
   description = "Current state of the cluster"
-  value = mongodbatlas_cluster.my_cluster.state_name
+  value       = mongodbatlas_cluster.my_cluster.state_name
 }
 
 output "mongo_uri" {

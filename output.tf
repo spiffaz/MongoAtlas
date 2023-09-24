@@ -10,7 +10,7 @@ output "cluster_id" {
 
 output "state_name" {
   description = "Current state of the cluster"
-  value = module.mongodb_atlas.state_name
+  value       = module.mongodb_atlas.state_name
 }
 
 output "mongo_uri" {

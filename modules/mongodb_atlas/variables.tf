@@ -19,8 +19,54 @@ variable "mongodb_atlas_accesslistip" {
   description = "IP addresses/ cidr ranges allowed to access the database"
 }
 
+variable "enable_mongodb_atlas_accesslist_security_group" {
+  type        = bool
+  description = "Restrict access to my atlas project to an AWS security group"
+  default     = true
+}
+
+variable "mongodb_atlas_accesslist_security_group_id" {
+  type    = string
+  default = "default_value"
+}
+
 variable "projectName" {
   description = "The atlas project name to be created"
+}
+
+variable "is_collect_database_specifics_statistics_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "is_data_explorer_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "is_performance_advisor_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "is_realtime_performance_panel_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "is_schema_advisor_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "maintenance_window_day_of_week" {
+  type    = number
+  default = 4
+}
+
+variable "maintenance_window_hour_of_day" {
+  type    = number
+  default = 2
 }
 
 variable "default_tags" {
@@ -35,6 +81,12 @@ variable "default_tags" {
 variable "enable_network_peering" {
   description = "Set to true to enable network peering with AWS resources."
   default     = false
+}
+
+variable "atlas_network_container_cidr_block" {
+  description = "CIDR range of the Atlas netowrk container"
+  type        = string
+  default     = "10.8.0.0/21"
 }
 
 variable "aws_region" {

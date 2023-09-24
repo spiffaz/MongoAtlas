@@ -35,6 +35,17 @@ variable "mongodb_atlas_accesslistip" {
   description = "IP addresses/ cidr ranges allowed to access the database"
 }
 
+variable "enable_mongodb_atlas_accesslist_security_group" {
+  type        = bool
+  description = "Restrict access to my atlas project to an AWS security group"
+  default     = true
+}
+
+variable "mongodb_atlas_accesslist_security_group_id" {
+  type    = string
+  default = "default_value"
+}
+
 variable "default_tags" {
   type        = map(string)
   description = "Map of default tags to apply to resources"
@@ -43,10 +54,51 @@ variable "default_tags" {
   }
 }
 
+variable "is_collect_database_specifics_statistics_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "is_data_explorer_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "is_performance_advisor_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "is_realtime_performance_panel_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "is_schema_advisor_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "maintenance_window_day_of_week" {
+  type    = number
+  default = 4
+}
+
+variable "maintenance_window_hour_of_day" {
+  type    = number
+  default = 2
+}
+
 # Enable or disable network peering
 variable "enable_network_peering" {
   description = "Set to true to enable network peering with AWS resources."
-  default     = false
+  default     = true
+}
+
+variable "atlas_network_container_cidr_block" {
+  description = "CIDR range of the Atlas netowrk container"
+  type        = string
+  default     = "10.8.0.0/21"
 }
 
 # AWS Variables (if you use VPC peering)
@@ -79,7 +131,6 @@ variable "datadog_api_key" {
 }
 
 # Database variables
-# database configuration
 variable "database_name" {
   description = "The name of the database to be created. The name can only contain ASCII letters, numbers, and hyphens"
   type        = string
