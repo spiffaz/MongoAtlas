@@ -1,5 +1,13 @@
 terraform {
   required_version = ">= 1.5"
+
+  backend "remote" {
+    organization = "spiffaz"
+    workspaces {
+      name = "atlas"
+    }
+  }
+
   required_providers {
     mongodbatlas = {
       source  = "mongodb/mongodbatlas"
