@@ -8,7 +8,7 @@ module "mongodb_atlas_project" {
     environment = "production"
     owner       = "myteam"
   }
-
+ # Take secrets and keys out and store as environment variables or secrets
   mongodb_atlas_api_pub_key  = "your-public-key"
   mongodb_atlas_api_pri_key  = "your-private-key"
   mongodb_atlas_org_id       = "your-org-id"
