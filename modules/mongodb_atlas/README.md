@@ -1,20 +1,20 @@
 # MongoDB Atlas Terraform Module
 
-This Terraform module helps you create and manage MongoDB Atlas projects, databases, users, and integrates with Datadog for monitoring. It simplifies the configuration of MongoDB Atlas resources, allowing you to define them as code.
+The MongoDB Atlas Terraform module streamlines the process of configuring and managing MongoDB Atlas projects, databases, users, and Datadog integration. You can define MongoDB Atlas resources as code, simplifying the setup and management of MongoDB Atlas infrastructure.
 
 ## Prerequisites
 
-Before using this module, ensure you have the following prerequisites:
+Before using this module, ensure you meet the following prerequisites:
 
-- [Terraform](https://www.terraform.io/downloads.html) installed.
-- MongoDB Atlas API public and private keys.
-- MongoDB Atlas organization ID.
-- AWS account ID (for network peering).
-- Datadog API key (if enabling Datadog integration).
+- [Terraform](https://www.terraform.io/downloads.html) is installed.
+- You have MongoDB Atlas API public and private keys.
+- You know your MongoDB Atlas organization ID.
+- You have an AWS account ID (if enabling network peering).
+- You possess a Datadog API key (for enabling Datadog integration).
 
 ## Usage
 
-Create a `main.tf` file in your Terraform project and add the following code:
+Create a `main.tf` file in your Terraform project and include the following code:
 
 ```hcl
 module "mongodb_atlas" {
@@ -117,7 +117,7 @@ output "datadog_integration_id" {
 }
 ```
 
-In this example, we have used multiple modules to create MongoDB Atlas resources, configure network peering, and integrate with Datadog for monitoring.
+In this example, multiple modules are used to create MongoDB Atlas resources, configure network peering, and integrate with Datadog for monitoring.
 
 ## Variables
 
@@ -125,9 +125,7 @@ In this example, we have used multiple modules to create MongoDB Atlas resources
 - `mongodb_atlas_api_pub_key`: MongoDB Atlas API public key.
 - `mongodb_atlas_api_pri_key`: MongoDB Atlas API private key.
 - `mongodb_atlas_org_id`: MongoDB Atlas organization ID.
-- `aws_account_id`: AWS
-
- account ID.
+- `aws_account_id`: AWS account ID.
 - `mongodb_atlas_accesslistip`: IP addresses/cidr ranges allowed to access the database.
 - `projectName`: The MongoDB Atlas project name to be created.
 - `default_tags`: Map of default tags to apply to resources.
@@ -145,15 +143,10 @@ In this example, we have used multiple modules to create MongoDB Atlas resources
 - `mongo_vpc_id`: The ID of the MongoDB Atlas container VPC.
 - `datadog_integration_id`: The ID of the Datadog integration (if enabled).
 
-**Note:** Ensure that you have valid MongoDB Atlas API keys, Datadog API key, and other required configurations before using this module.
+**Note:** Ensure that you have valid MongoDB Atlas API keys, a Datadog API key, and other required configurations before using this module.
 
 For more information on MongoDB Atlas, Datadog, and Terraform, refer to the respective documentation:
 
 - [MongoDB Atlas Documentation](https://docs.atlas.mongodb.com/)
 - [Datadog Documentation](https://docs.datadoghq.com/)
 - [Terraform Documentation](https://www.terraform.io/docs/index.html)
-
-## License 
-
-This Terraform module is provided under the MIT License. See the [LICENSE](LICENSE) file for more details.
-```

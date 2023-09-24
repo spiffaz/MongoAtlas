@@ -1,10 +1,22 @@
-# MongoDB Atlas Project Module
+# MongoDB Atlas Project Terraform Module
 
 The MongoDB Atlas Project Terraform module simplifies the creation and configuration of a MongoDB Atlas project. It provides options for enabling various features such as Data Explorer, Performance Advisor, and Network Peering with AWS resources. This module allows you to define your MongoDB Atlas project as code.
 
+## Prerequisites
+
+Before using this module, make sure you have the following prerequisites:
+
+- [Terraform](https://www.terraform.io/downloads.html) installed.
+- MongoDB Atlas API public and private keys.
+- MongoDB Atlas organization ID.
+- AWS account ID (if enabling network peering).
+- Valid AWS VPC configurations (if enabling network peering).
+
+**Note:** For security reasons, always store your sensitive keys and credentials, such as MongoDB Atlas API keys, as environment variables or secrets within your CI/CD tool.
+
 ## Usage
 
-To use this module, you can create a `main.tf` file in your Terraform project and add the following code:
+To use this module, create a `main.tf` file in your Terraform project and add the following code:
 
 ```hcl
 module "project" {
@@ -21,7 +33,7 @@ module "project" {
 }
 ```
 
-In the example above, replace `"./project"` with the actual source path of your MongoDB Atlas Project Terraform module. Customize the module configuration and other variables as needed.
+Replace `"./project"` with the actual source path of your MongoDB Atlas Project Terraform module. Customize the module configuration and other variables as needed.
 
 ## Example Configuration
 
@@ -93,7 +105,7 @@ output "mongo_container_vpc" {
 }
 ```
 
-In this example, we are using the MongoDB Atlas Project Terraform module and configuring various parameters and options for creating and configuring a MongoDB Atlas project. Make sure to customize the module configuration and other variables according to your project's needs.
+In this example, we are using the MongoDB Atlas Project Terraform module and configuring various parameters and options for creating and configuring a MongoDB Atlas project. Customize the module configuration and other variables according to your project's needs.
 
 ## Variables
 
