@@ -16,9 +16,9 @@ module "datadog_integration" {
   source = "your/module/source" # Replace with the actual source of your module.
 
   enable_datadog_integration = true
-  project_id                = var.project_id
-  datadog_api_key           = var.datadog_api_key
-  datadog_region            = var.datadog_region
+  project_id                 = var.project_id
+  datadog_api_key            = var.datadog_api_key
+  datadog_region             = var.datadog_region
 }
 
 output "datadog_integration_id" {

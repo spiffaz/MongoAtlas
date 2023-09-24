@@ -15,15 +15,15 @@ provider "mongodbatlas" {
 resource "mongodbatlas_cluster" "my_cluster" {
   project_id   = var.project_id
   name         = var.database_name
-  cluster_type = "REPLICASET" 
+  cluster_type = "REPLICASET"
 
   provider_name               = "TENANT"
   backing_provider_name       = "AWS"
   provider_instance_size_name = "M0"
   provider_region_name        = "US_EAST_1"
-  
+
   # Customize other cluster settings as needed.
-  
+
   tags {
     key   = "Team"
     value = "Infrastructure"

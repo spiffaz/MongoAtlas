@@ -15,27 +15,15 @@ provider "mongodbatlas" {
 resource "mongodbatlas_cluster" "my_cluster" {
   project_id   = var.project_id
   name         = var.database_name
-  cluster_type = "REPLICASET" # default to replicaset, consider sharded
+  cluster_type = "REPLICASET"
 
-  provider_name               = "TENANT"
-  backing_provider_name       = "AWS"
-  provider_instance_size_name = "M0"
-  provider_region_name        = "US_EAST_1"
-  #backup_enabled               = "true"
-  #mongo_db_major_version       = "4.4"
-  #auto_scaling_disk_gb_enabled = "false"
-
-  #cloud_backup      = true
-
-  #replication_specs {
-  #  num_shards = 3
-  #regions_config {
-  #  region_name     = "US_EAST_1"
-  #  electable_nodes = 3
-  #  priority        = 7
-  #  read_only_nodes = 0
-  #}
-  #}
+  provider_name                  = var.atlas_provider_name
+  backing_provider_name          = var.atlas_backing_provider_name
+  provider_instance_size_name    = var.provider_instance_size_name
+  provider_region_name           = var.provider_region_name
+  mongo_db_major_version         = var.mongo_db_major_version
+  auto_scaling_disk_gb_enabled   = var.auto_scaling_disk_gb_enabled
+  termination_protection_enabled = var.termination_protection_enabled
 
   tags {
     key   = "Team"

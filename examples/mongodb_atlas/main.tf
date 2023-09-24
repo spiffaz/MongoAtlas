@@ -20,7 +20,7 @@ module "mongodb_atlas" {
   datadog_region  = var.datadog_region
   aws_region      = var.aws_region
   aws_vpc_cidr    = var.aws_vpc_cidr
-  datadog_api_key = var.datadog_api_key 
+  datadog_api_key = var.datadog_api_key
 
   mongodb_atlas_api_pub_key = var.mongodb_atlas_api_pub_key
   mongodb_atlas_api_pri_key = var.mongodb_atlas_api_pri_key
@@ -35,10 +35,10 @@ module "mongodb_atlas" {
 }
 
 module "aws_resources" {
-  source          = "../aws_resources"
-  aws_region      = var.aws_region
-  aws_vpc_cidr    = var.aws_vpc_cidr
-  aws_subnet_cidr = "10.0.0.0/24" # change to variable after tests
+  source                 = "../aws_resources"
+  aws_region             = var.aws_region
+  aws_vpc_cidr           = var.aws_vpc_cidr
+  aws_subnet_cidr        = "10.0.0.0/24" # change to variable after tests
   default_tags           = var.default_tags
   enable_network_peering = var.enable_network_peering
 }
