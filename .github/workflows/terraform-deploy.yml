@@ -9,6 +9,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      MONGODB_ATLAS_ACCESSLISTIP: ${{ secrets.MONGODB_ATLAS_ACCESSLISTIP }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -18,6 +22,11 @@ jobs:
         with:
           terraform_version: 1.5.0
 
+      - name: Configure AWS credentials
+        run: |
+          echo ${{ secrets.AWS_ACCESS_KEY }} > ~/.aws/credentials
+          echo ${{ secrets.AWS_SECRET_KEY }} >> ~/.aws/credentials
+
       - name: Initialize Terraform
         uses: hashicorp/terraform-github-actions/init@v0.4.0
         #run: terraform init
@@ -26,8 +35,6 @@ jobs:
           mongodb_atlas_api_pri_key: ${{ secrets.mongodb_atlas_api_pri_key }}
           mongodb_atlas_org_id: ${{ secrets.mongodb_atlas_org_id }}
           aws_account_id: ${{ secrets.aws_account_id }}
-          aws_access_key: ${{ secrets.aws_access_key }}
-          aws_secret_key: ${{ secrets.aws_secret_key }}
           datadog_api_key: ${{ secrets.datadog_api_key }}
 
       - name: Terraform Validate
@@ -46,6 +53,4 @@ jobs:
           mongodb_atlas_api_pri_key: ${{ secrets.mongodb_atlas_api_pri_key }}
           mongodb_atlas_org_id: ${{ secrets.mongodb_atlas_org_id }}
           aws_account_id: ${{ secrets.aws_account_id }}
-          aws_access_key: ${{ secrets.aws_access_key }}
-          aws_secret_key: ${{ secrets.aws_secret_key }}
           datadog_api_key: ${{ secrets.datadog_api_key }}
