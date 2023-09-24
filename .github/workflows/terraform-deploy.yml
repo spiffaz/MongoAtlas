@@ -12,10 +12,10 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./main
+ #   defaults:
+ #     run:
+ #       shell: bash
+ #       working-directory: ./main
 
     env:
       mongodb_atlas_api_pub_key: ${{ secrets.mongodb_atlas_api_pub_key }}
