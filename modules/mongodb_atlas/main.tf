@@ -44,10 +44,16 @@ module "database" {
 }
 
 module "user" {
-  source                    = "./user"
-  project_id                = module.project.project_id
-  mongodb_atlas_api_pub_key = var.mongodb_atlas_api_pub_key
-  mongodb_atlas_api_pri_key = var.mongodb_atlas_api_pri_key
+  source                       = "./user"
+  project_id                   = module.project.project_id
+  mongodb_atlas_api_pub_key    = var.mongodb_atlas_api_pub_key
+  mongodb_atlas_api_pri_key    = var.mongodb_atlas_api_pri_key
+  username                     = var.username
+  auth_database_name           = var.auth_database_name
+  database_role_name           = var.database_role_name
+  database_name_to_give_access = var.database_name_to_give_access
+  user_password_length         = var.user_password_length
+  allow_special_characters     = var.allow_special_characters
 }
 
 module "datadog_integration" {

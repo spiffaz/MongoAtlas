@@ -53,6 +53,14 @@ module "mongodb_atlas" {
   mongo_db_major_version         = var.mongo_db_major_version
   auto_scaling_disk_gb_enabled   = var.auto_scaling_disk_gb_enabled
   termination_protection_enabled = var.termination_protection_enabled
+
+  # User configuration
+  username                     = var.username
+  auth_database_name           = var.auth_database_name
+  database_role_name           = var.database_role_name
+  database_name_to_give_access = var.database_name_to_give_access
+  user_password_length         = var.user_password_length
+  allow_special_characters     = var.allow_special_characters
 }
 
 module "aws_resources" {
