@@ -5,13 +5,19 @@ on:
     branches:
       - main
 
+env:
+  TF_LOG: INFO
+
 jobs:
-  deploy:
+  terraform:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./main
+
     env:
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      MONGODB_ATLAS_ACCESSLISTIP: ${{ secrets.MONGODB_ATLAS_ACCESSLISTIP }}
       mongodb_atlas_api_pub_key: ${{ secrets.mongodb_atlas_api_pub_key }}
       mongodb_atlas_api_pri_key: ${{ secrets.mongodb_atlas_api_pri_key }}
       mongodb_atlas_org_id: ${{ secrets.mongodb_atlas_org_id }}
@@ -28,12 +34,11 @@ jobs:
           terraform_version: 1.5.0
 
       - name: Initialize Terraform
-        uses: hashicorp/terraform-github-actions/init@v0.4.0
-        #run: terraform init
-
+        id: init
+        run: terraform init 
 
       - name: Terraform Validate
-        uses: hashicorp/terraform-github-actions/validate@v0.3.7
+        run: terraform validate
 
       #- name: Terraform Plan
       #  run: terraform plan -out=tfplan
@@ -42,9 +47,15 @@ jobs:
       #  run: terraform apply -auto-approve tfplan
 
       - name: Terraform Apply
-        uses: hashicorp/terraform-github-actions/apply@v0.4.0
+        run: terraform apply -auto-approve
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        #uses: hashicorp/terraform-github-actions/apply@v0.4.0
           #mongodb_atlas_api_pub_key: ${{ secrets.mongodb_atlas_api_pub_key }}
           #mongodb_atlas_api_pri_key: ${{ secrets.mongodb_atlas_api_pri_key }}
           #mongodb_atlas_org_id: ${{ secrets.mongodb_atlas_org_id }}
           #aws_account_id: ${{ secrets.aws_account_id }}
           #datadog_api_key: ${{ secrets.datadog_api_key }}
+
+
