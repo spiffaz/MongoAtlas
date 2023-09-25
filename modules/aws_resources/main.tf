@@ -44,6 +44,7 @@ resource "aws_security_group" "primary_default" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [aws_vpc.primary[count.index].cidr_block]
+    description = "Allow ssh"
   }
 
   egress {
@@ -51,7 +52,103 @@ resource "aws_security_group" "primary_default" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow external traffic"
   }
 
   tags = var.default_tags
+}
+
+# attach security group to a resource
+resource "aws_network_interface" "test" {
+  count           = var.enable_network_peering ? 1 : 0
+  subnet_id       = "aws_subnet.az1.id"
+  security_groups = [aws_security_group.primary_default[count.index].id]
+}
+
+# Disable inbound and outbound on default security group
+
+resource "aws_security_group_rule" "default_egress" {
+  type        = "egress"
+  description = "block all traffic"
+  protocol    = "-1"
+  from_port   = 0
+  to_port     = 0
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "default_ingress" {
+  type        = "ingress"
+  description = "block all traffic"
+  protocol    = "-1"
+  from_port   = 0
+  to_port     = 0
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_default_security_group" "default" {
+  count  = var.enable_network_peering ? 1 : 0
+  vpc_id = aws_vpc.primary[count.index].id
+
+  ingress = [
+    aws_security_group_rule.default_ingress.id,
+  ]
+
+  egress = [
+    aws_security_group_rule.default_egress.id,
+  ]
+}
+
+# VPC Flow logs
+
+resource "aws_cloudwatch_log_group" "example" {
+  count = var.enable_network_peering ? 1 : 0
+  name  = "log_group"
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["vpc-flow-logs.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "example" {
+  name               = "example"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_iam_role_policy" "example" {
+  name   = "example"
+  role   = aws_iam_role.example.id
+  policy = data.aws_iam_policy_document.example.json
+}
+
+resource "aws_flow_log" "example" {
+  count           = var.enable_network_peering ? 1 : 0
+  iam_role_arn    = aws_iam_role.example.arn
+  log_destination = "log" #aws_cloudwatch_log_group.example[count.index].arn
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.primary[count.index].id
+}
+
+data "aws_iam_policy_document" "example" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+    ]
+
+    resources = ["*"]
+  }
 }
