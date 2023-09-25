@@ -68,34 +68,31 @@ resource "aws_network_interface" "test" {
 # Disable inbound and outbound on default security group
 
 resource "aws_security_group_rule" "default_egress" {
-  type        = "egress"
-  description = "block all traffic"
-  protocol    = "-1"
-  from_port   = 0
-  to_port     = 0
-  cidr_blocks = ["0.0.0.0/0"]
+  count             = var.enable_network_peering ? 1 : 0
+  type              = "egress"
+  description       = "block all traffic"
+  protocol          = "-1"
+  from_port         = 0
+  to_port           = 0
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_default_security_group.default[count.index].id
 }
 
 resource "aws_security_group_rule" "default_ingress" {
-  type        = "ingress"
-  description = "block all traffic"
-  protocol    = "-1"
-  from_port   = 0
-  to_port     = 0
-  cidr_blocks = ["0.0.0.0/0"]
+  count             = var.enable_network_peering ? 1 : 0
+  type              = "ingress"
+  description       = "block all traffic"
+  protocol          = "-1"
+  from_port         = 0
+  to_port           = 0
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_default_security_group.default[count.index].id
 }
 
 resource "aws_default_security_group" "default" {
   count  = var.enable_network_peering ? 1 : 0
   vpc_id = aws_vpc.primary[count.index].id
 
-  ingress = [
-    aws_security_group_rule.default_ingress.id,
-  ]
-
-  egress = [
-    aws_security_group_rule.default_egress.id,
-  ]
 }
 
 # VPC Flow logs
@@ -132,7 +129,7 @@ resource "aws_iam_role_policy" "example" {
 resource "aws_flow_log" "example" {
   count           = var.enable_network_peering ? 1 : 0
   iam_role_arn    = aws_iam_role.example.arn
-  log_destination = "log" #aws_cloudwatch_log_group.example[count.index].arn
+  log_destination = aws_cloudwatch_log_group.example[count.index].arn
   traffic_type    = "ALL"
   vpc_id          = aws_vpc.primary[count.index].id
 }
