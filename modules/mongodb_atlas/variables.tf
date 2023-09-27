@@ -148,7 +148,7 @@ variable "provider_region_name" {
 variable "mongo_db_major_version" {
   description = "Mongo db version"
   type        = number
-  default     = "5.0"
+  default     = "4.0"
 }
 
 variable "auto_scaling_disk_gb_enabled" {

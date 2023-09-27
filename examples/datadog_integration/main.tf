@@ -15,7 +15,7 @@ provider "mongodbatlas" {
 }
 
 module "datadog_integration" {
-  source = "your/module/source" # Replace with the actual source of your module.
+  source = "../../modules/mongodb_atlas/datadog_integration" # Replace with the actual source of your module.
 
   enable_datadog_integration = true
   project_id                 = var.project_id

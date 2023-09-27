@@ -8,8 +8,8 @@ terraform {
 }
 
 module "aws_resources" {
-  source                 = "modules/aws_resources" # Replace with the source of your module.
-  enable_network_peering = false                   # Set to true to enable network peering with AWS resources from mongo db atlas
+  source                 = "../../modules/aws_resources" # Replace with the source of your module.
+  enable_network_peering = false                         # Set to true to enable network peering with AWS resources from mongo db atlas
 
   # Customize other variables as needed.
 }

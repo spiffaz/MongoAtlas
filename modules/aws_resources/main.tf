@@ -57,6 +57,7 @@ resource "aws_security_group" "primary_default" {
 resource "aws_network_interface" "test" {
   subnet_id       = "aws_subnet.az1.id"
   security_groups = [aws_security_group.primary_default.id]
+  depends_on      = [aws_subnet.az1]
 }
 
 # Disable inbound and outbound on default security group
