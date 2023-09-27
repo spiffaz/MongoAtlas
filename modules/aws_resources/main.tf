@@ -8,7 +8,6 @@ terraform {
 }
 
 resource "aws_vpc" "primary" {
-  count                = var.enable_network_peering ? 1 : 0
   cidr_block           = var.aws_vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -17,33 +16,29 @@ resource "aws_vpc" "primary" {
 }
 
 resource "aws_internet_gateway" "primary" {
-  count  = var.enable_network_peering ? 1 : 0
-  vpc_id = aws_vpc.primary[count.index].id
+  vpc_id = aws_vpc.primary.id
 
   tags = var.default_tags
 }
 
 resource "aws_subnet" "az1" {
-  count                   = var.enable_network_peering ? 1 : 0
-  vpc_id                  = aws_vpc.primary[count.index].id
+  vpc_id                  = aws_vpc.primary.id
   cidr_block              = var.aws_subnet_cidr
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   availability_zone       = "${var.aws_region}a"
 
   tags = var.default_tags
 }
 
 resource "aws_security_group" "primary_default" {
-  count       = var.enable_network_peering ? 1 : 0
-  name_prefix = "default-"
-  description = "Default security group for all instances in ${aws_vpc.primary[count.index].id}"
-  vpc_id      = aws_vpc.primary[count.index].id
+  description = "Default security group for all instances in ${aws_vpc.primary.id}"
+  vpc_id      = aws_vpc.primary.id
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.primary[count.index].cidr_block]
+    cidr_blocks = [aws_vpc.primary.cidr_block]
     description = "Allow ssh"
   }
 
@@ -60,46 +55,67 @@ resource "aws_security_group" "primary_default" {
 
 # attach security group to a resource
 resource "aws_network_interface" "test" {
-  count           = var.enable_network_peering ? 1 : 0
   subnet_id       = "aws_subnet.az1.id"
-  security_groups = [aws_security_group.primary_default[count.index].id]
+  security_groups = [aws_security_group.primary_default.id]
 }
 
 # Disable inbound and outbound on default security group
 
 resource "aws_security_group_rule" "default_egress" {
-  count             = var.enable_network_peering ? 1 : 0
   type              = "egress"
   description       = "block all traffic"
   protocol          = "-1"
   from_port         = 0
   to_port           = 0
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_default_security_group.default[count.index].id
+  security_group_id = aws_default_security_group.default.id
 }
 
 resource "aws_security_group_rule" "default_ingress" {
-  count             = var.enable_network_peering ? 1 : 0
   type              = "ingress"
   description       = "block all traffic"
   protocol          = "-1"
   from_port         = 0
   to_port           = 0
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_default_security_group.default[count.index].id
+  cidr_blocks       = [var.aws_vpc_cidr] # only allow traffic from the vpcs
+  security_group_id = aws_default_security_group.default.id
 }
 
 resource "aws_default_security_group" "default" {
-  count  = var.enable_network_peering ? 1 : 0
-  vpc_id = aws_vpc.primary[count.index].id
-
+  vpc_id = aws_vpc.primary.id
 }
 
 # VPC Flow logs
 
+# kms key for cloudwatch log group
+resource "aws_kms_key" "log_group_key" {
+  description         = "KMS key for CloudWatch Log Group encryption"
+  enable_key_rotation = true
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey",
+        ],
+        Effect = "Allow",
+        Principal = {
+          Service = "logs.amazonaws.com"
+        },
+        Resource = "*",
+      },
+    ],
+  })
+}
+
 resource "aws_cloudwatch_log_group" "example" {
-  count = var.enable_network_peering ? 1 : 0
-  name  = "log_group"
+  name              = "my_vpc_log_group"
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.log_group_key.id
 }
 
 data "aws_iam_policy_document" "assume_role" {
@@ -127,11 +143,10 @@ resource "aws_iam_role_policy" "example" {
 }
 
 resource "aws_flow_log" "example" {
-  count           = var.enable_network_peering ? 1 : 0
   iam_role_arn    = aws_iam_role.example.arn
-  log_destination = aws_cloudwatch_log_group.example[count.index].arn
+  log_destination = aws_cloudwatch_log_group.example.arn
   traffic_type    = "ALL"
-  vpc_id          = aws_vpc.primary[count.index].id
+  vpc_id          = aws_vpc.primary.id
 }
 
 data "aws_iam_policy_document" "example" {
@@ -146,6 +161,6 @@ data "aws_iam_policy_document" "example" {
       "logs:DescribeLogStreams",
     ]
 
-    resources = ["*"]
+    resources = ["arn:aws:logs:*:*:*"]
   }
 }

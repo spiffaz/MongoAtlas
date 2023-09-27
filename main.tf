@@ -25,7 +25,7 @@ module "mongodb_atlas" {
 
   mongodb_atlas_accesslistip                     = var.mongodb_atlas_accesslistip
   enable_mongodb_atlas_accesslist_security_group = var.enable_mongodb_atlas_accesslist_security_group
-  mongodb_atlas_accesslist_security_group_id     = module.aws_resources.aws_security_group_id
+  mongodb_atlas_accesslist_security_group_id     = var.mongodb_atlas_accesslist_security_group_id
 
   enable_network_peering     = var.enable_network_peering     # Optionally enable network peering
   enable_datadog_integration = var.enable_datadog_integration # Optionally enable Datadog integration
@@ -59,12 +59,4 @@ module "mongodb_atlas" {
   database_name_to_give_access = var.database_name_to_give_access
   user_password_length         = var.user_password_length
   allow_special_characters     = var.allow_special_characters
-}
-
-module "aws_resources" {
-  source = "./modules/aws_resources"
-
-  aws_region   = var.aws_region
-  aws_vpc_cidr = var.aws_vpc_cidr
-  default_tags = var.default_tags
 }

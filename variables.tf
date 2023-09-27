@@ -42,8 +42,9 @@ variable "enable_mongodb_atlas_accesslist_security_group" {
 }
 
 variable "mongodb_atlas_accesslist_security_group_id" {
-  type    = string
-  default = "default_value"
+  type        = string
+  description = "ID of AWS security group with allowed access to the cluster"
+  default     = "default_value"
 }
 
 variable "default_tags" {
