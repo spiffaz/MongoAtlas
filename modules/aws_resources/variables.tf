@@ -1,5 +1,6 @@
 variable "enable_network_peering" {
   description = "Set to true to enable network peering with AWS resources."
+  type        = bool
   default     = false
 }
 

@@ -15,18 +15,11 @@ variable "aws_account_id" {
   type = string
 }
 
-variable "aws_access_key" {
-  type = string
-}
-
-variable "aws_secret_key" {
-  type = string
-}
-
 
 # project variables
 variable "projectName" {
   description = "The atlas project name to be created"
+  type        = string
   default     = "my_project"
 }
 
@@ -93,6 +86,7 @@ variable "maintenance_window_hour_of_day" {
 # Enable or disable network peering
 variable "enable_network_peering" {
   description = "Set to true to enable network peering with AWS resources."
+  type        = bool
   default     = true
 }
 
@@ -124,6 +118,7 @@ variable "datadog_region" {
 # Enable or disable Datadog integration
 variable "enable_datadog_integration" {
   description = "Set to true to enable Datadog integration."
+  type        = bool
   default     = false
 }
 
@@ -141,6 +136,7 @@ variable "database_name" {
 
 variable "atlas_provider_name" {
   description = "provider to be used in creating atlas cluster"
+  type        = string
   default     = "TENANT"
 }
 

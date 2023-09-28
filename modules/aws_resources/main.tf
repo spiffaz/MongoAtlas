@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 1.5"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -11,7 +12,7 @@ resource "aws_vpc" "primary" {
   cidr_block           = var.aws_vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
-  tags = var.default_tags
+  tags                 = var.default_tags
 }
 
 resource "aws_internet_gateway" "primary" {
@@ -45,7 +46,7 @@ resource "aws_security_group" "primary_default" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [aws_vpc.primary.cidr_block]
     description = "Allow external traffic"
   }
 
@@ -68,8 +69,8 @@ resource "aws_default_security_group" "default" {
 
 # KMS key for CloudWatch Log Group encryption
 resource "aws_kms_key" "log_group_key_a" {
-  description         = "KMS key for CloudWatch Log Group encryption"
-  enable_key_rotation = true
+  description             = "KMS key for CloudWatch Log Group encryption"
+  enable_key_rotation     = true
   deletion_window_in_days = 7
 }
 
@@ -97,7 +98,7 @@ resource "aws_kms_key_policy" "example" {
 
 resource "aws_cloudwatch_log_group" "example" {
   name              = "my_vpc_log_group"
-  depends_on = [ aws_kms_key.log_group_key_a ]
+  depends_on        = [aws_kms_key.log_group_key_a]
   retention_in_days = 365
   kms_key_id        = aws_kms_key.log_group_key_a.arn
 }
@@ -145,6 +146,6 @@ data "aws_iam_policy_document" "example" {
       "logs:DescribeLogStreams",
     ]
 
-    resources = ["arn:aws:logs:*:*:*"]
+    resources = [aws_cloudwatch_log_group.example.arn]
   }
 }
