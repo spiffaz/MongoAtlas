@@ -40,7 +40,8 @@ module "mongodb_atlas" {
   maintenance_window_day_of_week = var.maintenance_window_day_of_week
   maintenance_window_hour_of_day = var.maintenance_window_hour_of_day
 
-  atlas_network_container_cidr_block = var.atlas_network_container_cidr_block # If network peering is enabled
+  # If network peering is enabled
+  atlas_network_container_cidr_block = var.atlas_network_container_cidr_block
 
   # Database configuration
   database_name                  = var.database_name
