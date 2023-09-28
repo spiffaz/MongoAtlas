@@ -11,7 +11,6 @@ resource "aws_vpc" "primary" {
   cidr_block           = var.aws_vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
-
   tags = var.default_tags
 }
 
@@ -53,33 +52,12 @@ resource "aws_security_group" "primary_default" {
   tags = var.default_tags
 }
 
+
 # attach security group to a resource
 resource "aws_network_interface" "test" {
-  subnet_id       = "aws_subnet.az1.id"
+  subnet_id       = aws_subnet.az1.id
   security_groups = [aws_security_group.primary_default.id]
   depends_on      = [aws_subnet.az1]
-}
-
-# Disable inbound and outbound on default security group
-
-resource "aws_security_group_rule" "default_egress" {
-  type              = "egress"
-  description       = "block all traffic"
-  protocol          = "-1"
-  from_port         = 0
-  to_port           = 0
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_default_security_group.default.id
-}
-
-resource "aws_security_group_rule" "default_ingress" {
-  type              = "ingress"
-  description       = "block all traffic"
-  protocol          = "-1"
-  from_port         = 0
-  to_port           = 0
-  cidr_blocks       = [var.aws_vpc_cidr] # only allow traffic from the vpcs
-  security_group_id = aws_default_security_group.default.id
 }
 
 resource "aws_default_security_group" "default" {
@@ -88,35 +66,40 @@ resource "aws_default_security_group" "default" {
 
 # VPC Flow logs
 
-# kms key for cloudwatch log group
-resource "aws_kms_key" "log_group_key" {
+# KMS key for CloudWatch Log Group encryption
+resource "aws_kms_key" "log_group_key_a" {
   description         = "KMS key for CloudWatch Log Group encryption"
   enable_key_rotation = true
+  deletion_window_in_days = 7
+}
+
+resource "aws_kms_key_policy" "example" {
+  key_id = aws_kms_key.log_group_key_a.id
   policy = jsonencode({
-    Version = "2012-10-17",
+    Id = "example"
     Statement = [
       {
-        Action = [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey",
-        ],
-        Effect = "Allow",
+        Action = "kms:*"
+        Effect = "Allow"
         Principal = {
-          Service = "logs.amazonaws.com"
-        },
-        Resource = "*",
+          AWS = "*"
+        }
+
+        Resource = "*"
+        Sid      = "Enable IAM User Permissions"
       },
-    ],
+    ]
+    Version = "2012-10-17"
   })
 }
 
+
+
 resource "aws_cloudwatch_log_group" "example" {
   name              = "my_vpc_log_group"
+  depends_on = [ aws_kms_key.log_group_key_a ]
   retention_in_days = 365
-  kms_key_id        = aws_kms_key.log_group_key.id
+  kms_key_id        = aws_kms_key.log_group_key_a.arn
 }
 
 data "aws_iam_policy_document" "assume_role" {
