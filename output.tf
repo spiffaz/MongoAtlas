@@ -29,10 +29,6 @@ output "db_user_password" {
   value       = module.mongodb_atlas.db_user_password
 }
 
-output "mongo_vpc_id" {
-  value = module.mongodb_atlas.mongo_vpc_id
-}
-
 output "project_id" {
   description = "The MongoDB Atlas Project ID"
   value       = module.mongodb_atlas.project_id
