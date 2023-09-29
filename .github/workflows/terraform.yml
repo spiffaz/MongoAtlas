@@ -43,6 +43,9 @@ jobs:
 
     - name: Go Tests
       run: go test ./tests
+      env:
+        aws_access_key: ${{ secrets.aws_access_key }}
+        aws_secret_key: ${{ secrets.aws_secret_key }}
 
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
