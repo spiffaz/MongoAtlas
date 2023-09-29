@@ -22,6 +22,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Debug AWS Credentials
+      run: |
+        echo "AWS Access Key: $AWS_ACCESS_KEY_ID"
+        echo "AWS Secret Key: $AWS_SECRET_ACCESS_KEY"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key }}
+    
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
