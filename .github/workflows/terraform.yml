@@ -42,7 +42,7 @@ jobs:
       run: terraform plan -input=false
 
     - name: Go Tests
-      run: go test ../../tests/main_test.go
+      run: go test ./tests
 
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
