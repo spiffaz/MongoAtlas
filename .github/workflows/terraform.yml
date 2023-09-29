@@ -22,15 +22,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Debug AWS Credentials
-      run: |
-        echo "AWS Access Key: $AWS_ACCESS_KEY_ID"
-        echo "AWS Secret Key: $AWS_SECRET_ACCESS_KEY"
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key }}
-    
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
@@ -49,6 +40,11 @@ jobs:
 
     - name: Terraform Plan
       run: terraform plan -input=false
+
+    - name: Set Environment Variables
+      run: |
+        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
 
     - name: Go Tests
       run: go test ./tests
