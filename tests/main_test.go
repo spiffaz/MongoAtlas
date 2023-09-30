@@ -17,11 +17,13 @@ func TestTerraformMongoDBAtlasClusterCreation(t *testing.T) {
 	if AWS_ACCESS_KEY_ID == "" {
 		t.Fatal("AWS_ACCESS_KEY_ID environment variable not set")
 	}
+	fmt.Println("AWS_ACCESS_KEY_ID is set")
 
 	AWS_SECRET_ACCESS_KEY := os.Getenv("AWS_SECRET_ACCESS_KEY")
 	if AWS_SECRET_ACCESS_KEY == "" {
 		t.Fatal("AWS_SECRET_ACCESS_KEY environment variable not set")
 	}
+	fmt.Println("AWS_SECRET_ACCESS_KEY is set")
 
 
 	// Create a temporary directory for the test
