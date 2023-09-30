@@ -36,8 +36,6 @@ func TestTerraformMongoDBAtlasClusterCreation(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir: modulePath,
 		EnvVars: map[string]string{
-			"AWS_ACCESS_KEY"         : AWS_ACCESS_KEY,
-
 			"TF_VAR_projectName"     : "my_project",
             "TF_VAR_datadog_region"  : "US",
             "TF_VAR_aws_region"      : "us-east-1",
