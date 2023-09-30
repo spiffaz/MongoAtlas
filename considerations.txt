@@ -11,3 +11,4 @@
 11) Only created test for the mongo atlas module.
 12) Integrated the test into the deployment pipeline. Did not include in pre-commit
 13) In production, do not store the database credentials as output, save to an external secret store.
+14) All activities were done in 1 branch. Testing and apply will fail if there were resources previously provisioned. Can set up a development branch, when using the branch it would use a development terraform workspace and append prefixes to the names of the resources.
