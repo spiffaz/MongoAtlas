@@ -1,0 +1,13 @@
+1) Assumed access to AWS and Mongo Atlas accounts.
+2) Created database, project, user, integration and aws resources as separate modules that can be reused individually.
+3) Made Datadog integration configurable.
+4) Made VPC peering configurable. Also gave the option of creating aws resources to peer with using the aws_resources module.
+5) Made maintenance window in project configurable as no specified date/time was given.
+6) Generated passwords for users. Made length and special characters configurable to align with custom password policies.
+7) Turned on optional monitoring metrics on the atlas project by default (can be disabled).
+8) Assumed the use of only 1 account for testing and deploying. There should be staging and test environment cedentials in production.
+9) Used GitHub secrets to store sensitive values. Should maintain your organizations secret store in production envionment where applicable.
+10) Included optional network security access to the mongo db project from an AWS Security group.
+11) Only created test for the mongo atlas module.
+12) Integrated the test into the deployment pipeline. Did not include in pre-commit
+13) In production, do not store the database credentials as output, save to an external secret store.
