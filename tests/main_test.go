@@ -25,15 +25,12 @@ func TestTerraformMongoDBAtlasClusterCreation(t *testing.T) {
 	}
 	fmt.Println("AWS_SECRET_ACCESS_KEY is set")
 
-
 	// Create a temporary directory for the test
     testDir := t.TempDir()
 	fmt.Println(string(testDir))
 
 	// Set the path to the Terraform code that will be tested.
     modulePath := filepath.Join("..", "modules", "mongodb_atlas")
-
-	fmt.Println("modulePath =",string(modulePath))
 
 	terraformOptions := &terraform.Options{
 		TerraformDir: modulePath,
