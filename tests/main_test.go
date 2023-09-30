@@ -6,10 +6,22 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 	"path/filepath"
+	"os"
 )
 
 func TestTerraformMongoDBAtlasClusterCreation(t *testing.T) {
 	t.Parallel()
+
+	// Map and confirm environment variables
+	AWS_ACCESS_KEY := os.Getenv("AWS_ACCESS_KEY")
+	if AWS_ACCESS_KEY == "" {
+		t.Fatal("AWS_ACCESS_KEY environment variable not set")
+	}
+
+	AWS_SECRET_KEY := os.Getenv("AWS_SECRET_KEY")
+	if AWS_SECRET_KEY == "" {
+		t.Fatal("AWS_SECRET_KEY environment variable not set")
+	}
 
 
 	// Create a temporary directory for the test
@@ -24,6 +36,8 @@ func TestTerraformMongoDBAtlasClusterCreation(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir: modulePath,
 		EnvVars: map[string]string{
+			"AWS_ACCESS_KEY"         : AWS_ACCESS_KEY,
+
 			"TF_VAR_projectName"     : "my_project",
             "TF_VAR_datadog_region"  : "US",
             "TF_VAR_aws_region"      : "us-east-1",
