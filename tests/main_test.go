@@ -1,7 +1,6 @@
 package test
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
 	"fmt"
 	"testing"
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -12,12 +11,6 @@ import (
 
 func TestTerraformMongoDBAtlasClusterCreation(t *testing.T) {
 	t.Parallel()
-
-	// Create an AWS provider object.
-    provider := aws.NewProvider()
-
-	// Configure the AWS provider object to use your AWS access keys stored as environment variables.
-    provider.WithEnvCredentials()
 
 	// Map and confirm environment variables
 	AWS_ACCESS_KEY_ID := os.Getenv("AWS_ACCESS_KEY_ID")
