@@ -68,7 +68,7 @@ func TestTerraformMongoDBAtlasClusterCreation(t *testing.T) {
             "TF_VAR_atlas_network_container_cidr_block" : "10.8.0.0/21",
             
             // Database configuration
-            "TF_VAR_database_name"                  : "test_database",
+            "TF_VAR_database_name"                  : "admin",
             "TF_VAR_atlas_provider_name"            : "TENANT",
             "TF_VAR_atlas_backing_provider_name"    : "AWS",
             "TF_VAR_provider_instance_size_name"    : "M0",
@@ -78,10 +78,10 @@ func TestTerraformMongoDBAtlasClusterCreation(t *testing.T) {
             "TF_VAR_termination_protection_enabled" : "false",
 
             // User configuration
-            "TF_VAR_username"                     : "test_user",
+            "TF_VAR_username"                     : "Admin",
             "TF_VAR_auth_database_name"           : "admin",
             "TF_VAR_database_role_name"           : "atlasAdmin",
-            "TF_VAR_database_name_to_give_access" : "test_database",
+            "TF_VAR_database_name_to_give_access" : "admin",
             "TF_VAR_user_password_length"         : "10",
             "TF_VAR_allow_special_characters"     : "false",
         },
