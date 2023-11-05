@@ -2,9 +2,9 @@ enable_datadog_integration = false # Optionally enable Datadog integration
 datadog_region             = "US"
 datadog_api_key            = ""
 
-mongodb_atlas_api_pub_key = "hnywtikb"
-mongodb_atlas_api_pri_key = "829f3686-961d-47c8-af93-c3fb8dd259b6"
-mongodb_atlas_org_id      = "6508ba36b74ab34c5b994349"
+mongodb_atlas_api_pub_key = ""
+mongodb_atlas_api_pri_key = ""
+mongodb_atlas_org_id      = ""
 
 enable_network_peering = false # Optionally enable network peering
 #aws_account_id = "" 
